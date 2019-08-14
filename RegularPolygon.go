@@ -1,11 +1,6 @@
-package polygons
+package main
 
-import (
-	"math"
-	"physics-game/circle"
-	"physics-game/line"
-	"physics-game/point"
-)
+import "math"
 
 func toRadians(d float64) float64 {
 	return d * (math.Pi / 180)
@@ -13,7 +8,7 @@ func toRadians(d float64) float64 {
 
 // RegularPolygon is a polygon where all sides are the same length
 type RegularPolygon struct {
-	Center               point.Point
+	Center               Point
 	Sides                int
 	SideLength, Rotation float64
 }
@@ -31,21 +26,21 @@ func (p *RegularPolygon) Area() float64 {
 }
 
 // Circumcircle returns the smallest circle which contains all of the shape's vertices.
-func (p *RegularPolygon) Circumcircle() circle.Circle {
+func (p *RegularPolygon) Circumcircle() Circle {
 	center, sL, sides := p.Center, p.SideLength, p.Sides
-	return circle.Circle{
+	return Circle{
 		Center: center,
 		Radius: sL / 2 * math.Sin(toRadians(180/float64(sides))),
 	}
 }
 
 // Vertices returns an array of the shape's vertices.
-func (p *RegularPolygon) Vertices() []point.Point {
+func (p *RegularPolygon) Vertices() []Point {
 	sides, rotation, circle := p.Sides, p.Rotation, p.Circumcircle()
 	a := float64(360 / sides)
 	start := float64(a/2) - rotation
 
-	var vertices []point.Point
+	var vertices []Point
 
 	for angle := start; angle < 360+start; angle += a {
 		r := toRadians(angle)
@@ -56,17 +51,17 @@ func (p *RegularPolygon) Vertices() []point.Point {
 }
 
 // Edges returns the lines that comprise the perimeter of the shape.
-func (p *RegularPolygon) Edges() []line.Line {
-	edges := make([]line.Line, p.Sides)
+func (p *RegularPolygon) Edges() []Line {
+	edges := make([]Line, p.Sides)
 	vertices := p.Vertices()
 	for i := 0; i < len(vertices); i++ {
 		if i == len(vertices)-1 {
-			edges[i] = line.Line{
+			edges[i] = Line{
 				Start: vertices[i],
 				End:   vertices[0],
 			}
 		} else {
-			edges[i] = line.Line{
+			edges[i] = Line{
 				Start: vertices[i],
 				End:   vertices[i+1],
 			}
@@ -88,9 +83,9 @@ func (p *RegularPolygon) Perimeter() float64 {
 // IrregularApothem returns the radius of the largest circle that will fit in the shape originating from it's center.
 func (p *RegularPolygon) IrregularApothem() float64 {
 	edges, center := p.Edges(), p.Center
-	possApothems := make([]line.Line, len(edges))
+	possApothems := make([]Line, len(edges))
 	for i := 0; i < len(edges); i++ {
-		possApothems[i] = line.Line{
+		possApothems[i] = Line{
 			Start: center,
 			End:   edges[i].Center(),
 		}
@@ -108,9 +103,9 @@ func (p *RegularPolygon) IrregularApothem() float64 {
 }
 
 // Midpoints returns an array of the center points of each edge
-func (p *RegularPolygon) Midpoints() []point.Point {
+func (p *RegularPolygon) Midpoints() []Point {
 	edges := p.Edges()
-	midpoints := make([]point.Point, len(edges))
+	midpoints := make([]Point, len(edges))
 	for i := 0; i < len(edges); i++ {
 		midpoints[i] = edges[i].Center()
 	}
@@ -118,9 +113,9 @@ func (p *RegularPolygon) Midpoints() []point.Point {
 }
 
 // Normals returns an array of the lines perpendicular to the shape's edges
-func (p *RegularPolygon) Normals() []line.Line {
+func (p *RegularPolygon) Normals() []Line {
 	edges := p.Edges()
-	normals := make([]line.Line, len(edges))
+	normals := make([]Line, len(edges))
 	for i := 0; i < len(edges); i++ {
 		normals[i] = edges[i].GetPerpendicular()
 	}

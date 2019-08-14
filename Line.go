@@ -1,14 +1,12 @@
-package line
+package main
 
 import (
 	"math"
-	"physics-game/physics"
-	"physics-game/point"
 )
 
 // Line is a line between 2 points.
 type Line struct {
-	Start, End point.Point
+	Start, End Point
 }
 
 // Slope returns the rise / run of the line.
@@ -36,12 +34,12 @@ func (l *Line) Slope() float64 {
 
 // Length returns the length of the line.
 func (l *Line) Length() float64 {
-	return point.Distance(l.Start, l.End)
+	return Distance(l.Start, l.End)
 }
 
 // Center returns the center point of the line.
-func (l *Line) Center() point.Point {
-	return point.Point{
+func (l *Line) Center() Point {
+	return Point{
 		X: (l.End.X + l.Start.X) / 2,
 		Y: (l.End.Y + l.Start.Y) / 2,
 	}
@@ -66,7 +64,7 @@ func (l *Line) XInt() float64 {
 }
 
 // IsPointOnLine returns a bool of whether the point rests on the line.
-func (l *Line) IsPointOnLine(p point.Point) bool {
+func (l *Line) IsPointOnLine(p Point) bool {
 	x, y := float64(l.Start.X), float64(l.Start.Y)
 	x2, y2 := float64(p.X), float64(p.Y)
 	return (x2-x)*l.Slope() == y2-y
@@ -77,10 +75,10 @@ func (l *Line) IntersectsWith(l2 *Line) bool {
 	// https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
 	p1, q1 := l.Start, l.End
 	p2, q2 := l2.Start, l2.End
-	o1 := point.Orientation(p1, q1, p2)
-	o2 := point.Orientation(p1, q1, q2)
-	o3 := point.Orientation(p2, q2, p1)
-	o4 := point.Orientation(p2, q2, q1)
+	o1 := Orientation(p1, q1, p2)
+	o2 := Orientation(p1, q1, q2)
+	o3 := Orientation(p2, q2, p1)
+	o4 := Orientation(p2, q2, q1)
 
 	// General case
 	if o1 != o2 && o3 != o4 {
@@ -108,9 +106,9 @@ func (l *Line) IntersectsWith(l2 *Line) bool {
 }
 
 // GetPointOfIntersection returns the point where two lines cross
-func (l *Line) GetPointOfIntersection(l2 *Line) (point.Point, bool) {
+func (l *Line) GetPointOfIntersection(l2 *Line) (Point, bool) {
 	if l.IntersectsWith(l2) != true || l.Slope() == l2.Slope() {
-		return point.Point{}, false
+		return Point{}, false
 	}
 
 	x0, y0, m0 := float64(l.Start.X), float64(l.Start.Y), l.Slope()
@@ -119,7 +117,7 @@ func (l *Line) GetPointOfIntersection(l2 *Line) (point.Point, bool) {
 	x := (m0*x0 - m1*x1 + y1 - y0) / (m0 - m1)
 	y := (m0*m1*(x1-x0) + m1*y0 - m0*y1) / (m1 - m0)
 
-	return point.Point{
+	return Point{
 		X: x,
 		Y: y,
 	}, true
@@ -162,14 +160,14 @@ func (l *Line) GetPerpendicular() Line {
 	}
 
 	return Line{
-		Start: point.Point{X: x0, Y: y0},
-		End:   point.Point{X: x1, Y: y1},
+		Start: Point{X: x0, Y: y0},
+		End:   Point{X: x1, Y: y1},
 	}
 	// The perpendicular is a tad shorter than the original but it should work
 }
 
 // ToVector creates a vector with the same length and direction as the given line.
-func (l *Line) ToVector() physics.Vector {
+func (l *Line) ToVector() Vector {
 	m, len := l.Slope(), l.Length()
 	dir := math.Atan(m)
 	if dir == math.Inf(1) {
@@ -178,14 +176,14 @@ func (l *Line) ToVector() physics.Vector {
 	if dir == math.Inf(-1) {
 		dir = math.Pi / 2
 	}
-	return physics.Vector{
+	return Vector{
 		Direction: dir,
 		Magnitude: len,
 	}
 }
 
 // AddVector returns a new line, offset by a given vector.
-func (l Line) AddVector(v physics.Vector) Line {
+func (l Line) AddVector(v Vector) Line {
 	start, end := l.Start, l.End
 	start = start.AddVector(v)
 	end = end.AddVector(v)

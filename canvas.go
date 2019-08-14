@@ -1,8 +1,6 @@
-package canvas
+package main
 
-import (
-	"github.com/nlepage/golang-wasm/js/bind"
-)
+// import "github.com/nlepage/golang-wasm/js/bind"
 
 // TDContext returns the context js object responsible for manipulating the canvas.
 type TDContext struct {

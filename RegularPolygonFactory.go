@@ -1,14 +1,10 @@
-package polygons
-
-import (
-	"physics-game/point"
-)
+package main
 
 // RPFactory is a struct which creates new polygons.
 type RPFactory struct{}
 
 // CreatePolygon returns a RegularPolygon with the given size and number of sides.
-func (f RPFactory) CreatePolygon(sideLength float64, sides int, center point.Point) RegularPolygon {
+func (f RPFactory) CreatePolygon(sideLength float64, sides int, center Point) RegularPolygon {
 	return RegularPolygon{
 		SideLength: sideLength,
 		Sides:      sides,
