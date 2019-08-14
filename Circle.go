@@ -29,3 +29,8 @@ func (c *Circle) Area() float64 {
 func (c *Circle) Perimeter() float64 {
 	return 2 * math.Pi * c.Radius
 }
+
+// Render renders the circle on the canvas.
+func (c *Circle) Render(stroke string, fill string) {
+	renderCircle(c, fill, stroke)
+}

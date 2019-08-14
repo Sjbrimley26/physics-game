@@ -133,3 +133,8 @@ func (p *RegularPolygon) Bottom() float64 {
 	}
 	return bottom
 }
+
+// Render renders the shape on the canvas.
+func (p *RegularPolygon) Render(stroke string, fill string) {
+	renderShape(p.Vertices(), fill, stroke)
+}
