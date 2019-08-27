@@ -24,10 +24,10 @@ func (m *Movable) Move() {
 		Direction: m.Velocity.Direction,
 		Magnitude: m.Velocity.Magnitude * 0.95,
 	}
-	if m.Shape.Center.Y+ap > 500 {
+	if m.Shape.Center.Y+ap > 700 {
 		m.Shape.Center = Point{
 			X: m.Shape.Center.X,
-			Y: 500 - ap,
+			Y: 700 - ap,
 		}
 	}
 	if m.Shape.Center.X < 0 {
@@ -40,7 +40,7 @@ func (m *Movable) Move() {
 
 // Fall applies gravity to the object.
 func (m *Movable) Fall() {
-	if m.Shape.Center.Y+m.Shape.Apothem() < 500 {
+	if m.Shape.Center.Y+m.Shape.Apothem() < 700 {
 		m.Velocity = m.Velocity.Add(Vector{math.Pi / 2, 0.5})
 	}
 }

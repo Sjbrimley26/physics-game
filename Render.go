@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/nlepage/golang-wasm/js/bind"
 	"math"
+	"syscall/js"
 )
 
 // Renderable represents an object that can be rendered on the canvas.
@@ -10,41 +10,41 @@ type Renderable interface {
 	Render()
 }
 
+var ctx Context
+var canvas js.Value
+
+func init() {
+	canvas = js.
+		Global().
+		Get("document").
+		Call("getElementById", "canvas")
+
+	ctx = getContext(canvas)
+}
+
 func renderShape(vertices []Point, fill string, stroke string) {
-	ctx := TDContext{}
-
-	if err := bind.BindGlobals(ctx); err != nil {
-		panic(err)
-	}
-
-	ctx.SetFillStyle(fill)
-	ctx.SetStrokeStyle(stroke)
-	ctx.BeginPath()
+	ctx.setFillStyle(fill)
+	ctx.setStrokeStyle(stroke)
+	ctx.beginPath()
 
 	for i, p := range vertices {
 		if i == 0 {
-			ctx.MoveTo(p.X, p.Y)
+			ctx.moveTo(p.X, p.Y)
 			continue
 		}
-		ctx.LineTo(p.X, p.Y)
+		ctx.lineTo(p.X, p.Y)
 	}
 
-	ctx.Fill()
-	ctx.Stroke()
+	ctx.fill()
+	ctx.stroke()
 }
 
 func renderCircle(c *Circle, fill string, stroke string) {
-	ctx := TDContext{}
-
-	if err := bind.BindGlobals(ctx); err != nil {
-		panic(err)
-	}
-
 	x, y := c.Center.X, c.Center.Y
-	ctx.BeginPath()
-	ctx.SetFillStyle(fill)
-	ctx.SetStrokeStyle(stroke)
-	ctx.Arc(x, y, c.Radius, 0, 2*math.Pi)
-	ctx.Fill()
-	ctx.Stroke()
+	ctx.beginPath()
+	ctx.setFillStyle(fill)
+	ctx.setStrokeStyle(stroke)
+	ctx.arc(x, y, c.Radius, 0, 2*math.Pi)
+	ctx.fill()
+	ctx.stroke()
 }
